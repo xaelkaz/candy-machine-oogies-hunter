@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Countdown from "react-countdown";
-import {Button, CircularProgress, Snackbar} from "@material-ui/core";
+import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 import * as anchor from "@project-serum/anchor";
 
-import {LAMPORTS_PER_SOL} from "@solana/web3.js";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-import {useAnchorWallet} from "@solana/wallet-adapter-react";
-import {WalletDialogButton} from "@solana/wallet-adapter-material-ui";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { WalletDialogButton } from "@solana/wallet-adapter-material-ui";
 
 import {
     CandyMachine,
@@ -40,6 +40,7 @@ export interface HomeProps {
     connection: anchor.web3.Connection;
     startDate: number;
     treasury: anchor.web3.PublicKey;
+    mintingAvailable: boolean;
     txTimeout: number;
 }
 
@@ -176,30 +177,31 @@ const Home = (props: HomeProps) => {
 
         <div className='main-page-wrapper p0'>
             {/*  HEADER */}
-            <OggiesHeader/>
+            <OggiesHeader />
 
             {/*  HOME */}
             <OogiesBanner candyMachineId={props.candyMachineId}
-                          config={props.config}
-                          connection={props.connection}
-                          startDate={props.startDate}
-                          treasury={props.treasury}
-                          txTimeout={props.txTimeout}/>
+                config={props.config}
+                connection={props.connection}
+                startDate={props.startDate}
+                treasury={props.treasury}
+                mintingAvailable={props.mintingAvailable}
+                txTimeout={props.txTimeout} />
 
             {/*  Oogies */}
-            <Oogies/>
+            <Oogies />
 
             {/*  Sneak Peaks */}
-            <OogiesShowCases/>
+            <OogiesShowCases />
 
             {/*  TEAM */}
-            <OogiesTeam/>
+            <OogiesTeam />
 
             {/*  ROADMAP */}
-            <OogieRoadMap/>
+            <OogieRoadMap />
 
             {/*  FAQ */}
-            <OogiesFaq/>
+            <OogiesFaq />
 
         </div>
     );
@@ -211,7 +213,7 @@ interface AlertState {
     severity: "success" | "info" | "warning" | "error" | undefined;
 }
 
-const renderCounter = ({days, hours, minutes, seconds, completed}: any) => {
+const renderCounter = ({ days, hours, minutes, seconds, completed }: any) => {
     return (
         <CounterText>
             {hours + (days || 0) * 24} hours, {minutes} minutes, {seconds} seconds

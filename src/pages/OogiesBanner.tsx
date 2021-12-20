@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import LaunchButton from '../components/features/LaunchButton';
 import {
     awaitTransactionSignatureConfirmation,
@@ -7,14 +7,14 @@ import {
     mintOneToken,
     shortenAddress
 } from "../candy-machine";
-import {Button, CircularProgress, Snackbar} from "@material-ui/core";
+import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import Countdown from "react-countdown";
 import Alert from "@material-ui/lab/Alert";
 import styled from "styled-components";
-import {WalletDialogButton} from "@solana/wallet-adapter-material-ui";
+import { WalletDialogButton } from "@solana/wallet-adapter-material-ui";
 import * as anchor from "@project-serum/anchor";
-import {useAnchorWallet} from "@solana/wallet-adapter-react";
-import {LAMPORTS_PER_SOL} from "@solana/web3.js";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const ConnectButton = styled(WalletDialogButton)`
   line-height: 50px;
@@ -58,6 +58,7 @@ export interface HomeProps {
     connection: anchor.web3.Connection;
     startDate: number;
     treasury: anchor.web3.PublicKey;
+    mintingAvailable: boolean;
     txTimeout: number;
 }
 
@@ -77,6 +78,7 @@ const OogiesBanner = (props: HomeProps) => {
         severity: undefined,
     });
 
+    console.log(props.startDate)
     const [startDate, setStartDate] = useState(new Date(props.startDate));
 
     const wallet = useAnchorWallet();
@@ -147,13 +149,13 @@ const OogiesBanner = (props: HomeProps) => {
             if (!error.msg) {
                 if (error.message.indexOf("0x138")) {
                 } else if (error.message.indexOf("0x137")) {
-                    message = `SOLD OUT!`;
+                    message = `SOLD OUT WHITELIST!`;
                 } else if (error.message.indexOf("0x135")) {
                     message = `Insufficient funds to mint. Please fund your wallet.`;
                 }
             } else {
                 if (error.code === 311) {
-                    message = `SOLD OUT!`;
+                    message = `SOLD OUT WHITELIST!`;
                     setIsSoldOut(true);
                 } else if (error.code === 312) {
                     message = `Minting period hasn't started yet.`;
@@ -209,10 +211,10 @@ const OogiesBanner = (props: HomeProps) => {
                 <Snackbar
                     open={alertState.open}
                     autoHideDuration={6000}
-                    onClose={() => setAlertState({...alertState, open: false})}
+                    onClose={() => setAlertState({ ...alertState, open: false })}
                 >
                     <Alert
-                        onClose={() => setAlertState({...alertState, open: false})}
+                        onClose={() => setAlertState({ ...alertState, open: false })}
                         severity={alertState.severity}
                     >
                         {alertState.message}
@@ -280,33 +282,41 @@ const OogiesBanner = (props: HomeProps) => {
                                     <div className="row align-items-center">
                                         <div className="col-md-12">
                                             <div className={`pr-table-wrapper text-center active`}>
-                                                <div className="price">17th December 16:00P UTC</div>
-                                                {!wallet ? (
-                                                    <ConnectButton>Connect Wallet</ConnectButton>
-                                                ) : (
-                                                    <button
-                                                        disabled={isSoldOut || isMinting || !isActive || itemsRemaining === 300}
-                                                        onClick={onMint}
-                                                        className="trial-button hover-reverse-gr-bg-one"
-                                                    >
-                                                        {isSoldOut ||  itemsRemaining === 300 ? (
-                                                            "SOLD OUT"
-                                                        ) : isActive ? (
-                                                            isMinting ? (
-                                                                <CircularProgress/>
-                                                            ) : (
-                                                                "MINT"
-                                                            )
+                                                {!props.mintingAvailable &&
+                                                    <div className="price">22th December 16:00P UTC</div>
+
+                                                }
+                                                {props.mintingAvailable &&
+                                                    <>
+                                                        <div className="price">22th December 13:00P UTC</div>
+                                                        {!wallet ? (
+                                                            <ConnectButton>Connect Wallet</ConnectButton>
                                                         ) : (
-                                                            <Countdown
-                                                                date={startDate}
-                                                                onMount={({completed}) => completed && setIsActive(true)}
-                                                                onComplete={() => setIsActive(true)}
-                                                                renderer={renderCounter}
-                                                            />
+                                                            <button
+                                                                disabled={isSoldOut || isMinting || !isActive || itemsRemaining === 300}
+                                                                onClick={onMint}
+                                                                className="trial-button hover-reverse-gr-bg-one"
+                                                            >
+                                                                {isSoldOut && itemsRemaining === 300 ? (
+                                                                    "SOLD OUT WHITELIST"
+                                                                ) : isActive ? (
+                                                                    isMinting ? (
+                                                                        <CircularProgress />
+                                                                    ) : (
+                                                                        "MINT WHITELIST"
+                                                                    )
+                                                                ) : (
+                                                                    <Countdown
+                                                                        date={startDate}
+                                                                        onMount={({ completed }) => completed && setIsActive(true)}
+                                                                        onComplete={() => setIsActive(true)}
+                                                                        renderer={renderCounter}
+                                                                    />
+                                                                )}
+                                                            </button>
                                                         )}
-                                                    </button>
-                                                )}
+                                                    </>
+                                                }
                                             </div>
                                             {/* /.pr-table-wrapper */}
                                         </div>
@@ -333,7 +343,7 @@ interface AlertState {
     severity: "success" | "info" | "warning" | "error" | undefined;
 }
 
-const renderCounter = ({days, hours, minutes, seconds, completed}: any) => {
+const renderCounter = ({ days, hours, minutes, seconds, completed }: any) => {
     return (
         <CounterText>
             {hours + (days || 0) * 24} hours, {minutes} minutes, {seconds} seconds
