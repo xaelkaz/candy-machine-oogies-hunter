@@ -5,7 +5,7 @@ module.exports = {
       script: "yarn",
       args: "start",
       env: {
-        PORT: 3001,
+        PORT: 3000,
         NODE_ENV: "production",
       },
     },
