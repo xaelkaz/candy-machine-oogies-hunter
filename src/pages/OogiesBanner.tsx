@@ -196,7 +196,7 @@ const OogiesBanner = (props: HomeProps) => {
         <div className='hero-banner-four' id='home'>
             <div className='inner-container'>
 
-                {wallet && (
+                {/*  {wallet && (
                     <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
                 )}
 
@@ -207,7 +207,7 @@ const OogiesBanner = (props: HomeProps) => {
                 {wallet && <p>Redeemed: {itemsRedeemed}</p>}
 
                 {wallet && <p>Remaining: {itemsRemaining}</p>}
-
+ */}
                 <Snackbar
                     open={alertState.open}
                     autoHideDuration={6000}
