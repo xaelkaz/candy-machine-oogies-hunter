@@ -282,28 +282,23 @@ const OogiesBanner = (props: HomeProps) => {
                                     <div className="row align-items-center">
                                         <div className="col-md-12">
                                             <div className={`pr-table-wrapper text-center active`}>
-                                                {!props.mintingAvailable &&
-                                                    <div className="price">22th December 16:00P UTC</div>
-
-                                                }
-                                                {props.mintingAvailable &&
                                                     <>
-                                                        <div className="price">22th December 13:00P UTC</div>
+                                                        <div className="price">22th December 16:00P UTC</div>
                                                         {!wallet ? (
                                                             <ConnectButton>Connect Wallet</ConnectButton>
                                                         ) : (
                                                             <button
-                                                                disabled={isSoldOut || isMinting || !isActive || itemsRemaining === 300}
+                                                                disabled={isSoldOut || isMinting || !isActive }
                                                                 onClick={onMint}
                                                                 className="trial-button hover-reverse-gr-bg-one"
                                                             >
-                                                                {isSoldOut && itemsRemaining === 300 ? (
-                                                                    "SOLD OUT WHITELIST"
+                                                                {isSoldOut ? (
+                                                                    "SOLD OUT"
                                                                 ) : isActive ? (
                                                                     isMinting ? (
                                                                         <CircularProgress />
                                                                     ) : (
-                                                                        "MINT WHITELIST"
+                                                                        "MINT"
                                                                     )
                                                                 ) : (
                                                                     <Countdown
@@ -316,7 +311,6 @@ const OogiesBanner = (props: HomeProps) => {
                                                             </button>
                                                         )}
                                                     </>
-                                                }
                                             </div>
                                             {/* /.pr-table-wrapper */}
                                         </div>
